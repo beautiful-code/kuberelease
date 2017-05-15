@@ -8,6 +8,8 @@ gem 'haml'
 
 gem 'erb2haml'
 
+gem 'httparty'
+
 # Use mysql as the database for Active Record
 gem 'mysql2', '~> 0.3.18'
 # Use SCSS for stylesheets

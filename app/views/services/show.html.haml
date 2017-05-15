@@ -14,6 +14,24 @@
 %p
   %strong K8s service:
   = @service.k8s_service
+
+%div
+  %strong Release Versions:
+  %table
+    %thead
+      %tr
+        %th Version/SHA
+        %th Message
+        %th Committer
+        %th Time (UTC)
+    %tbody
+      - @service.release_versions.each do |ver|
+        %tr
+          %td= ver[:sha]
+          %td= ver[:message]
+          %td= ver[:committer]
+          %td= ver[:time]
+
 = link_to 'Edit', edit_suite_service_path(@suite,@service)
 |
 = link_to 'Back to Suite', suite_path(@suite)

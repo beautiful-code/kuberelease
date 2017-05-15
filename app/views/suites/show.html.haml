@@ -1,0 +1,36 @@
+%p#notice= notice
+
+%div
+  %strong Name:
+  = @suite.name
+
+%div
+  %strong Services:
+  %table
+    %thead
+      %tr
+        %th Name
+        %th Suite
+        %th Docker repo
+        %th Git repo
+        %th K8s service
+        %th{:colspan => "3"}
+    %tbody
+      - @suite.services.each do |service|
+        %tr
+          %td= service.name
+          %td= service.suite.name
+          %td= service.docker_repo
+          %td= service.git_repo
+          %td= service.k8s_service
+          %td= link_to 'Show', suite_service_path(@suite, service)
+  = link_to 'Create new Service', new_suite_service_path(@suite)
+
+%br
+%br
+%br
+
+
+= link_to 'Edit', edit_suite_path(@suite)
+|
+= link_to 'Back', suites_path

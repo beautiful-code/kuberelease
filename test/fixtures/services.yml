@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  suite_id: 
+  docker_repo: MyString
+  git_repo: MyString
+  k8s_service: MyString
+
+two:
+  name: MyString
+  suite_id: 
+  docker_repo: MyString
+  git_repo: MyString
+  k8s_service: MyString

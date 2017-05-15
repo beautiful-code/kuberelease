@@ -1,0 +1,27 @@
+= form_for([@suite, @service]) do |f|
+  - if @service.errors.any?
+    #error_explanation
+      %h2
+        = pluralize(@service.errors.count, "error")
+        prohibited this service from being saved:
+      %ul
+        - @service.errors.full_messages.each do |message|
+          %li= message
+  .field
+    = f.label :name
+    %br/
+    = f.text_field :name
+  .field
+    = f.label :docker_repo
+    %br/
+    = f.text_field :docker_repo
+  .field
+    = f.label :git_repo
+    %br/
+    = f.text_field :git_repo
+  .field
+    = f.label :k8s_service
+    %br/
+    = f.text_field :k8s_service
+  .actions
+    = f.submit

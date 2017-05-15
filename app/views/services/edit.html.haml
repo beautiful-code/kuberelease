@@ -1,0 +1,4 @@
+%h1 Editing Service
+= render 'form'
+= link_to 'Destroy', [@suite, @service], method: :delete, data: { confirm: 'Are you sure?' }
+= link_to 'Back', suite_service_path(@suite, @service)

@@ -1,0 +1,15 @@
+= form_for(@suite) do |f|
+  - if @suite.errors.any?
+    #error_explanation
+      %h2
+        = pluralize(@suite.errors.count, "error")
+        prohibited this suite from being saved:
+      %ul
+        - @suite.errors.full_messages.each do |message|
+          %li= message
+  .field
+    = f.label :name
+    %br/
+    = f.text_field :name
+  .actions
+    = f.submit

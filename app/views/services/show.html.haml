@@ -1,0 +1,19 @@
+%p#notice= notice
+%p
+  %strong Name:
+  = @service.name
+%p
+  %strong Suite:
+  = @service.suite.name
+%p
+  %strong Docker repo:
+  = @service.docker_repo
+%p
+  %strong Git repo:
+  = @service.git_repo
+%p
+  %strong K8s service:
+  = @service.k8s_service
+= link_to 'Edit', edit_suite_service_path(@suite,@service)
+|
+= link_to 'Back to Suite', suite_path(@suite)

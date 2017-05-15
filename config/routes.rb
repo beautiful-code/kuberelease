@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
-  resources :suites
+
+  resources :suites do
+    resources :services
+  end
+
 
   root 'suites#index'
 

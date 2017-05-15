@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
 
+
   resources :suites do
     resources :services
+    resources :environments
   end
 
 

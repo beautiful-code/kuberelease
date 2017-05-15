@@ -11,7 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170515185744) do
+ActiveRecord::Schema.define(version: 20170515193925) do
+
+  create_table "environments", force: :cascade do |t|
+    t.string   "name",         limit: 255
+    t.integer  "suite_id",     limit: 4
+    t.string   "k8s_master",   limit: 255
+    t.string   "k8s_username", limit: 255
+    t.string   "k8s_password", limit: 255
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
+
+  add_index "environments", ["suite_id"], name: "index_environments_on_suite_id", using: :btree
 
   create_table "services", force: :cascade do |t|
     t.string   "name",        limit: 255
@@ -31,5 +43,6 @@ ActiveRecord::Schema.define(version: 20170515185744) do
     t.datetime "updated_at",             null: false
   end
 
+  add_foreign_key "environments", "suites"
   add_foreign_key "services", "suites"
 end

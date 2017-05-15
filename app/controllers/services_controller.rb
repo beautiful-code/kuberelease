@@ -64,10 +64,6 @@ class ServicesController < ApplicationController
   end
 
   private
-    def set_suite
-      @suite = Suite.find(params[:suite_id])
-    end
-
     # Use callbacks to share common setup or constraints between actions.
     def set_service
       @service = @suite.services.find(params[:id])
@@ -75,6 +71,6 @@ class ServicesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def service_params
-      params.require(:service).permit(:name, :suite_id, :docker_repo, :git_repo, :k8s_service)
+      params.require(:service).permit(:name, :docker_repo, :git_repo, :k8s_service)
     end
 end

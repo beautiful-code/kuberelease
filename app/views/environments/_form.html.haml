@@ -1,0 +1,27 @@
+= form_for([@suite,@environment]) do |f|
+  - if @environment.errors.any?
+    #error_explanation
+      %h2
+        = pluralize(@environment.errors.count, "error")
+        prohibited this environment from being saved:
+      %ul
+        - @environment.errors.full_messages.each do |message|
+          %li= message
+  .field
+    = f.label :name
+    %br/
+    = f.text_field :name
+  .field
+    = f.label :k8s_master
+    %br/
+    = f.text_field :k8s_master
+  .field
+    = f.label :k8s_username
+    %br/
+    = f.text_field :k8s_username
+  .field
+    = f.label :k8s_password
+    %br/
+    = f.text_field :k8s_password
+  .actions
+    = f.submit

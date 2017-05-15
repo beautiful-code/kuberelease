@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  suite_id: 
+  k8s_master: MyString
+  k8s_username: MyString
+  k8s_password: MyString
+
+two:
+  name: MyString
+  suite_id: 
+  k8s_master: MyString
+  k8s_username: MyString
+  k8s_password: MyString

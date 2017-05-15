@@ -1,0 +1,5 @@
+%h1 Editing Environment
+= render 'form'
+= link_to 'Destroy', [@suite, @environment], method: :delete, data: { confirm: 'Are you sure?' }
+|
+= link_to 'Back', suite_environment_path(@suite, @environment)

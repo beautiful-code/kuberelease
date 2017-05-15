@@ -1,0 +1,19 @@
+%p#notice= notice
+%p
+  %strong Name:
+  = @environment.name
+%p
+  %strong Suite:
+  = @environment.suite.name
+%p
+  %strong K8s master:
+  = @environment.k8s_master
+%p
+  %strong K8s username:
+  = @environment.k8s_username
+%p
+  %strong K8s password:
+  = @environment.k8s_password
+= link_to 'Edit', edit_suite_environment_path(@suite,@environment)
+|
+= link_to 'Back to Suite', suite_path(@suite)

@@ -12,4 +12,8 @@ class Service < ActiveRecord::Base
   def release_versions
     github_shas.select {|item| docker_image_tags.include?(item[:sha])}
   end
+
+  def get_message_for_release sha
+    release_versions.find {|item| item[:sha] == sha}[:message]
+  end
 end

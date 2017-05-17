@@ -3,7 +3,12 @@ Rails.application.routes.draw do
 
   resources :suites do
     resources :services
-    resources :environments
+    resources :environments do
+      member do
+        get 'deployment_details'
+        post 'launch_version'
+      end
+    end
   end
 
 

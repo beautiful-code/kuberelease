@@ -14,6 +14,28 @@
 %p
   %strong K8s password:
   = @environment.k8s_password
+
+%div
+  %strong Current services
+  %table
+    %thead
+      %tr
+        %th Service Name
+        %th Current Version
+        %th Links
+        %th Launch Version
+    %tbody
+      - @environment.suite.services.each do |service|
+        - current_tag = @environment.current_service_tag(service.name)
+        %tr
+          %td= service.name
+          %td= "#{service.get_message_for_release(current_tag)} #{current_tag}"
+          %td= link_to 'Deployment Details', deployment_details_suite_environment_path(:service_name => service.name), :target => '_blank'
+          %td
+            = form_tag launch_version_suite_environment_path(:service_name=>service.name) do
+              = select 'launch', 'version', service.release_versions.collect {|r| [r[:message], r[:sha]]}
+              = submit_tag 'Launch', :confirm => 'Are you sure?'
+
 = link_to 'Edit', edit_suite_environment_path(@suite,@environment)
 |
 = link_to 'Back to Suite', suite_path(@suite)

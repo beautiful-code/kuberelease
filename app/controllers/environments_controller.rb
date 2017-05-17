@@ -1,6 +1,6 @@
 class EnvironmentsController < ApplicationController
   before_action :set_suite
-  before_action :set_environment, only: [:show, :edit, :update, :destroy]
+  before_action :set_environment
 
   # GET /environments
   # GET /environments.json
@@ -60,6 +60,19 @@ class EnvironmentsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to @suite, notice: 'Environment was successfully destroyed.' }
       format.json { head :no_content }
+    end
+  end
+
+  def deployment_details
+    render json: @environment.deployment_details(params[:service_name]), status: :ok
+  end
+
+  def launch_version
+    service = @suite.services.find_by_name(params[:service_name])
+    if @environment.launch_version service, params[:launch][:version]
+       redirect_to [@suite, @environment], notice: 'Version launched successfully'
+    else
+       redirect_to [@suite, @environment], error: 'Unable to launch version'
     end
   end
 

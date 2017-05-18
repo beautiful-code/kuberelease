@@ -14,6 +14,6 @@ class Service < ActiveRecord::Base
   end
 
   def get_message_for_release sha
-    release_versions.find {|item| item[:sha] == sha}[:message]
+    release_versions.find {|item| item[:sha] == sha}[:message] rescue nil
   end
 end

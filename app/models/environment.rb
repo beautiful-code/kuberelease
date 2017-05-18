@@ -31,7 +31,7 @@ class Environment < ActiveRecord::Base
   def current_service_tag service_name
     json = deployment_details service_name
 
-    container = json["spec"]["template"]["spec"]["containers"].find{|c| c["name"] == service_name}
+    container = json["spec"]["template"]["spec"]["containers"].find{|c| c["name"] == service_name} rescue nil
 
     if container
       container["image"].split(":").last

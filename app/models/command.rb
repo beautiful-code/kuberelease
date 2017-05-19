@@ -64,7 +64,6 @@ class Command < ActiveRecord::Base
         "image": "#{service.docker_repo}:#{version}",
         "restartPolicy": "Never",
         "command": [
-          "#{cmd}"
         ],
         "args": [
         ]
@@ -74,21 +73,26 @@ class Command < ActiveRecord::Base
 }
 eos
 
+    body_hash = JSON.parse(body)
+    # Set command and args
+    body_hash["spec"]["containers"][0]["command"] = [cmd.split.first]
+    body_hash["spec"]["containers"][0]["args"] = cmd.split[1..-1]
+
     result = HTTParty.post(url,
-                           :body => body,
+                           :body => body_hash.to_json,
                            :headers => headers,
                            :verify => false
                           )
 
-    puts result.body
+    #puts result.body
 
     # Got 200 from k8s, mark sumbitted
     if result.response.class == Net::HTTPCreated
        mark_submitted
        self.save!
-    end
 
-    poll_status
+       poll_status
+    end
   end
 
   def poll_status

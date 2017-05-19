@@ -45,7 +45,7 @@
         %label Service:
         = select 'command', 'service_id', @environment.services.collect {|r| [r.name, r.id]}
         %label Command:
-        = text_field 'command', 'cmd'
+        = text_field 'command', 'cmd', value: 'uname'
         = submit_tag 'Run'
 
 
@@ -59,14 +59,16 @@
         %th State
         %th Pod Name
         %th Created at
+        %th Output
     %tbody
       - @environment.commands.each do |command|
         %tr
           %td= command.cmd
-          %td= "#{command.service.name} (#{command.version})"
+          %td= "#{command.service.name} (#{command.version[0,5]})"
           %td= command.state
           %td= command.pod_name
           %td= command.created_at
+          %td= command.output
 
 %br
 %br

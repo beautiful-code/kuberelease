@@ -88,7 +88,7 @@ eos
     cmd.save
 
     # TODO: Put it in delayed job
-    cmd.initiate_command
+    cmd.delay.initiate_command
   end
 
 

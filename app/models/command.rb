@@ -24,16 +24,30 @@ class Command < ActiveRecord::Base
     end
   end
 
-  POD_API_BASE_PATH = "/api/v1/namespaces/default/pods"
-
-  def pod_rest_url
-    "#{environment.k8s_master}#{POD_API_BASE_PATH}"
+  def finished?
+    ['completed', 'failed'].include? state
   end
+
+  PODS_API_BASE_PATH = "/api/v1/namespaces/default/pods"
+
+  def pods_rest_url
+    "#{environment.k8s_master}#{PODS_API_BASE_PATH}"
+  end
+
+  def pod_rest_url pod_name
+    "#{pods_rest_url}/#{pod_name}"
+  end
+
+  def pod_logs_rest_url pod_name
+    "#{pod_rest_url(pod_name)}/log"
+  end
+
+
 
   def initiate_command
     headers = environment.prepare_auth_headers
 
-    url = pod_rest_url
+    url = pods_rest_url
 
     body = <<-eos
     {
@@ -69,10 +83,67 @@ eos
     puts result.body
 
     # Got 200 from k8s, mark sumbitted
-    mark_submitted if result.response.class == Net::HTTPOK
+    if result.response.class == Net::HTTPCreated
+       mark_submitted
+       self.save!
+    end
+
+    poll_status
   end
 
-  def check_status
+  def poll_status
+    # Fetch the latest log.
+    fetch_log
+
+    fetch_status
+
+    # If status is not completed/failed, retry after N seconds.
+    poll_status unless self.finished?
+  end
+  handle_asynchronously :poll_status, :run_at => Proc.new {3.seconds.from_now}
+
+  def fetch_log
+    headers = environment.prepare_auth_headers
+    url = pod_logs_rest_url(pod_name)
+
+    result = HTTParty.get(url,
+                 :headers => headers,
+                 :verify => false
+                )
+    case result.response.class.name
+    when "Net::HTTPBadRequest" # Happens when the pod is not created at
+      self.output = result.body
+      self.save!
+    when "Net::HTTPOK"
+      self.output = result.body
+      self.save!
+    else
+      puts "Received status #{result.response.class.name} with the following body #{result.body}"
+    end
+  end
+
+  def fetch_status
+    headers = environment.prepare_auth_headers
+    url = pod_rest_url(pod_name)
+
+    result = HTTParty.get(url,
+                 :headers => headers,
+                 :verify => false
+                )
+    case result.response.class.name
+    when "Net::HTTPOK"
+      pod_status = JSON.parse(result.body)["status"]["phase"]
+      case pod_status
+      when 'Succeeded'
+        self.mark_completed
+        self.save!
+      when 'Failed'
+        self.mark_failed
+        self.save!
+      else
+        puts "Received pod_status #{pod_status}. Dont know what to do."
+      end
+    end
 
   end
 

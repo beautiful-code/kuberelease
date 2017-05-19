@@ -12,6 +12,9 @@ gem 'httparty'
 
 gem 'state_machine'
 
+gem 'delayed_job'
+gem 'delayed_job_active_record'
+
 # Use mysql as the database for Active Record
 gem 'mysql2', '~> 0.3.18'
 # Use SCSS for stylesheets

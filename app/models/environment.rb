@@ -1,5 +1,8 @@
 class Environment < ActiveRecord::Base
   belongs_to :suite
+  has_many :commands, -> { order(created_at: :desc) }
+
+  delegate :services, to: :suite
 
   DEPLOYMENT_API_BASE_PATH = "/apis/extensions/v1beta1/namespaces/default/deployments/"
 
@@ -8,7 +11,8 @@ class Environment < ActiveRecord::Base
     auth_header_value = "Basic #{basic_auth_base64}"
 
     {
-      "Authorization" => auth_header_value
+      "Authorization" => auth_header_value,
+      "Content-Type" => 'application/json'
     }
   end
 
@@ -69,5 +73,23 @@ eos
 
     result.response.class == Net::HTTPOK
   end
+
+
+  def run_command service, cmd, desc = nil
+    # Create a command object
+    cmd = Command.create(
+      :environment => self,
+      :service => service,
+      :version => current_service_tag(service.name),
+      :desc => desc,
+      :cmd => cmd,
+    )
+    cmd.pod_name = "pod-#{self.name}-#{service.name}-#{cmd.id}".downcase
+    cmd.save
+
+    # TODO: Put it in delayed job
+    cmd.initiate_command
+  end
+
 
 end

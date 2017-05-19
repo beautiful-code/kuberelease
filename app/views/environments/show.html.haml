@@ -36,6 +36,43 @@
               = select 'launch', 'version', service.release_versions.collect {|r| [r[:message], r[:sha]]}
               = submit_tag 'Launch', :confirm => 'Are you sure?'
 
+%div
+
+  %div#run_command
+    %h4 Run command
+    = form_tag run_command_suite_environment_path do
+      %p
+        %label Service:
+        = select 'command', 'service_id', @environment.services.collect {|r| [r.name, r.id]}
+        %label Command:
+        = text_field 'command', 'cmd'
+        = submit_tag 'Run'
+
+
+
+  %strong Commands
+  %table
+    %thead
+      %tr
+        %th Command
+        %th Service
+        %th State
+        %th Pod Name
+        %th Created at
+    %tbody
+      - @environment.commands.each do |command|
+        %tr
+          %td= command.cmd
+          %td= "#{command.service.name} (#{command.version})"
+          %td= command.state
+          %td= command.pod_name
+          %td= command.created_at
+
+%br
+%br
+%br
+
+
 = link_to 'Edit', edit_suite_environment_path(@suite,@environment)
 |
 = link_to 'Back to Suite', suite_path(@suite)

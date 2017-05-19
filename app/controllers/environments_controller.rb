@@ -76,6 +76,15 @@ class EnvironmentsController < ApplicationController
     end
   end
 
+  def run_command
+    service = @suite.services.find_by_id(params[:command][:service_id])
+    if @environment.run_command service, params[:command][:cmd]
+      redirect_to [@suite, @environment], notice: 'Command initialized.'
+    else
+      redirect_to [@suite, @environment], error: 'Unable to initialize command.'
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_environment

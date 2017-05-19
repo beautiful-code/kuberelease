@@ -11,7 +11,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170515193925) do
+ActiveRecord::Schema.define(version: 20170518204212) do
+
+  create_table "commands", force: :cascade do |t|
+    t.integer  "environment_id", limit: 4
+    t.integer  "service_id",     limit: 4
+    t.string   "version",        limit: 255
+    t.string   "desc",           limit: 255
+    t.text     "cmd",            limit: 65535
+    t.string   "output",         limit: 255
+    t.string   "state",          limit: 255
+    t.string   "pod_name",       limit: 255
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+  end
+
+  add_index "commands", ["environment_id"], name: "index_commands_on_environment_id", using: :btree
+  add_index "commands", ["service_id"], name: "index_commands_on_service_id", using: :btree
 
   create_table "environments", force: :cascade do |t|
     t.string   "name",         limit: 255

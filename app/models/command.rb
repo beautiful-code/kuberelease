@@ -42,36 +42,32 @@ class Command < ActiveRecord::Base
     "#{pod_rest_url(pod_name)}/log"
   end
 
-
-
   def initiate_command
     headers = environment.prepare_auth_headers
 
     url = pods_rest_url
 
-    body = <<-eos
+    body = <<-EOS
     {
-  "apiVersion": "v1",
-  "kind": "Pod",
-  "metadata": {
-    "name": "#{pod_name}"
-  },
-  "spec": {
-  	"restartPolicy": "Never",
-    "containers": [
-      {
-      	"name": "command-runner",
-        "image": "#{service.docker_repo}:#{version}",
+      "apiVersion": "v1",
+      "kind": "Pod",
+      "metadata": {
+        "name": "#{pod_name}"
+      },
+      "spec": {
         "restartPolicy": "Never",
-        "command": [
-        ],
-        "args": [
+        "containers": [
+          {
+            "name": "command-runner",
+            "image": "#{service.docker_repo}:#{version}",
+            "restartPolicy": "Never",
+            "command": [],
+            "args": []
+          }
         ]
       }
-    ]
-  }
-}
-eos
+    }
+    EOS
 
     body_hash = JSON.parse(body)
     # Set command and args

@@ -10,6 +10,12 @@
 // Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require jquery
+//= require jquery3
 //= require jquery_ujs
-//= require_tree .
+//= require dataTables/jquery.dataTables
+//= require dataTables/bootstrap/3/jquery.dataTables.bootstrap
+//= require popper
+//= require bootstrap
+//= require angular
+//= require kuber_release
+//= require controllers/show_service_ctrl

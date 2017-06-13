@@ -1,0 +1,143 @@
+%div{"ng-controller" => "ShowServiceCtrl"}
+  = link_to 'Back to Environment', [@suite, @environment]
+
+  .row
+    .col-12
+      %h5 Suite: #{@environment.suite.name}
+    .col-12
+      %h5 Environment: #{@environment.name}
+
+  .row
+    .col-12
+      %h4 Service Details:
+      %table.table.table-bordered
+        %thead
+          %tr
+            %th.align-center Service Info
+            %th.align-center Current Version
+            %th.align-center Links
+            %th
+        %tbody
+          %tr{"ng-show" => "!service.object"}
+            %td.align-center{colspan: 4}
+              %i.fa.fa-spinner.fa-pulse.fa-3x.fa-fw
+          %tr{"ng-show" => "service.object"}
+            %td.align-center {{service.object.name}}
+            %td.align-center
+              {{service.currentVersion.name}}
+              %br
+              %a.btn.btn-link{href: "https://github.com/{{service.object.git_repo}}/commit/{{service.currentVersion.tag}}"}
+                ({{service.currentVersion.tag}})
+
+            %td.align-center= link_to 'k8s deployment', deployment_details_suite_environment_path(:service_name => @service.name), :target => '_blank'
+            %td.align-center
+              = form_tag launch_version_suite_environment_path(service_name: @service.name, service_id: @service.id) do
+                %select{name: "launch[version]", id: "launch_version", class: 'form-control'}
+                  %option{"ng-repeat" => "option in service.releaseVersions", value: "{{option.sha}}"}
+                    {{option.message}}
+                %br
+                = submit_tag 'Release the selected version', :confirm => 'Are you sure?', class: 'btn btn-primary'
+
+  %ul.nav.nav-tabs{:role => "tablist"}
+    %li.nav-item
+      %a.nav-link.active{"data-toggle" => "tab", :href => "#env_vars", :role => "tab"} ENV Variables
+    %li.nav-item
+      %a.nav-link{"data-toggle" => "tab", :href => "#run_command", :role => "tab"} Run Command
+    %li.nav-item
+      %a.nav-link{"data-toggle" => "tab", :href => "#commands", :role => "tab"} Command History
+    %li.nav-item
+      %a.nav-link{"data-toggle" => "tab", :href => "#logs", :role => "tab"} Logs
+
+  .tab-content
+    #env_vars.tab-pane.active{:role => "tabpanel"}
+      %br
+      .col-12
+        %button.btn.btn-warning{type: 'button', "ng-click" => "addNewServiceVariableEntry()"}
+          %i.fa.fa-plus
+          Add another variable
+      .col-12
+        = form_tag update_variables_suite_environment_path, method: :post do
+          %table.table.table-hover.table-bordered
+            %thead
+              %tr
+                %th.align-center Key
+                %th.align-center Value
+                %th
+            %tbody
+              = hidden_field_tag 'service_id', @service.id
+
+              %tr{"ng-repeat" => "command in serviceVariables"}
+                %td= text_field_tag 'env_vars[name_{{$index}}]',nil, class: 'form-control', "ng-model" => "command.name"
+                %td= text_field_tag 'env_vars[value_{{$index}}]',nil, class: 'form-control', "ng-model" => "command.value"
+                %td
+                  %button.btn.btn-default{type: 'button', "ng-click" => "deleteServiceVariableEntry($index)"}
+                    %i.fa.fa-trash-o
+
+          = submit_tag 'Update ENV Variables', class: 'btn btn-primary'
+
+      = render "spacer"
+
+    #run_command.tab-pane{:role => "tabpanel"}
+      %br
+      = form_tag run_command_suite_environment_path, class: 'form-inline' do
+        = hidden_field_tag 'command[service_id]', @service.id
+        %label Command:
+        = text_field 'command', 'cmd', value: 'uname', class: 'form-control col-10'
+        = submit_tag 'Run', class: 'btn btn-success'
+
+      %br
+      %br
+      .alert.alert-info
+        %i.fa.fa-info-circle
+        Example: RAILS_ENV=staging bundle exec rake namespace_name:task_name
+
+      = render "spacer"
+
+    #commands.tab-pane{:role => "tabpanel"}
+      %br
+      %table.table.table-hover.table-bordered
+        %thead
+          %tr
+            %th.align-center Command
+            %th.align-center Service
+            %th.align-center State
+            %th.align-center Pod Name
+            %th.align-center Created at
+            %th.align-center Output
+        %tbody
+          %tr{"ng-repeat" => "command in serviceCommands"}
+            %td {{command.cmd}}
+            %td
+              = @service.name
+              ({{command.version}})
+            %td {{command.state}}
+            %td {{command.pod_name}}
+            %td
+              {{command.time_in_words}}
+              ago
+            %td {{command.output}}
+
+      = render "spacer"
+
+    #logs.tab-pane{:role => "tabpanel"}
+      %div{"ng-show" => "!serviceLog"}
+        %i.fa.fa-spinner.fa-pulse.fa-3x.fa-fw
+      %pre{"ng-show" => "serviceLog"}
+        {{serviceLog}}
+      = render "spacer"
+
+  = link_to 'Back to Environment', [@suite, @environment]
+
+:javascript
+  var PageConfig = {
+    service: {
+      id: "#{@service.id}",
+      name: "#{@service.name}",
+    },
+    environment: {
+      id: "#{@environment.id}"
+    },
+    suite: {
+      id: "#{@suite.id}"
+    },
+  };

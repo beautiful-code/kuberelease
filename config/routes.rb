@@ -7,6 +7,7 @@ Rails.application.routes.draw do
         get 'deployment_details'
         post 'launch_version'
         post 'run_command'
+        get 'show_service/:service_id', to: :show_service, as: :show_service
       end
     end
   end

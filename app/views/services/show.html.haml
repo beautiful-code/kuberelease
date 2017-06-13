@@ -1,23 +1,25 @@
-%p#notice= notice
-%p
-  %strong Name:
-  = @service.name
-%p
-  %strong Suite:
-  = @service.suite.name
-%p
-  %strong Docker repo:
-  = @service.docker_repo
-%p
-  %strong Git repo:
-  = @service.git_repo
-%p
-  %strong K8s service (DEPRECATED):
-  = @service.k8s_service
+.row
+  %h3 Service Info:
+  %table.table.table-bordered
+    %thead
+      %tr
+        %th Name
+        %th Suite
+        %th DockerHub Repo
+        %th Git Repo
+        %th K8s Deployment
 
-%div
-  %strong Release Versions:
-  %table
+    %tbody
+      %tr
+        %td= @service.name
+        %td= @service.suite.name
+        %td= link_to @service.docker_repo, "https://hub.docker.com/r/#{@service.docker_repo}", target: '_blank'
+        %td= link_to @service.git_repo, "https://github.com/#{@service.git_repo}", target: '_blank'
+        %td= @service.k8s_service
+
+.row
+  %h3 Release Versions:
+  %table.table.table-hover.table-bordered
     %thead
       %tr
         %th Version/SHA
@@ -27,10 +29,10 @@
     %tbody
       - @service.release_versions.each do |ver|
         %tr
-          %td= ver[:sha]
+          %td= link_to ver[:sha], "https://github.com/#{@service.git_repo}/commit/#{ver[:sha]}", target: '_blank'
           %td= ver[:message]
           %td= ver[:committer]
-          %td= ver[:time]
+          %td= time_ago_in_words(ver[:time], include_seconds: true)
 
 = link_to 'Edit', edit_suite_service_path(@suite,@service)
 |

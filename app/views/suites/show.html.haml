@@ -1,53 +1,49 @@
-%p#notice= notice
+.row
+  %h2
+    Name: #{@suite.name}
 
-%div
-  %strong Name:
-  = @suite.name
-
-%div
+.row
   %strong Services:
-  %table
+  %table.table.table-hover.table-bordered
     %thead
       %tr
-        %th Name
-        %th Docker repo
-        %th Git repo
-        %th K8s service
+        %th Mircoservice Name
+        %th DockerHub Repository
+        %th Git Repository
+        %th K8s Deployment Name
         %th{:colspan => "3"}
     %tbody
       - @suite.services.each do |service|
         %tr
           %td= service.name
-          %td= service.docker_repo
-          %td= service.git_repo
+          %td= link_to service.docker_repo, "https://hub.docker.com/r/#{service.docker_repo}", target: '_blank'
+          %td= link_to service.git_repo, "https://github.com/#{service.git_repo}", target: '_blank'
           %td= service.k8s_service
           %td= link_to 'Show', suite_service_path(@suite, service)
-  = link_to 'Create new Service', new_suite_service_path(@suite)
+  = link_to '+ Add New Service', new_suite_service_path(@suite), class: 'btn btn-primary'
 
-%div
+.row
   %strong Environments:
-  %table
+  %table.table.table-hover.table-bordered
     %thead
       %tr
         %th Name
-        %th K8s master
-        %th K8s username
-        %th K8s password
-        %th{:colspan => "3"}
+        -#
+          %th K8s master
+          %th K8s username
+          %th K8s password
+        %th
     %tbody
       - @suite.environments.each do |env|
         %tr
           %td= env.name
-          %td= env.k8s_master
-          %td= env.k8s_username
-          %td= env.k8s_password
+          -#
+            %td= env.k8s_master
+            %td= env.k8s_username
+            %td= env.k8s_password
           %td= link_to 'Show', suite_environment_path(@suite, env)
-  = link_to 'Create new Environment', new_suite_environment_path(@suite)
 
-%br
-%br
-%br
-
+  = link_to '+ Add New Environment', new_suite_environment_path(@suite), class: 'btn btn-primary'
 
 = link_to 'Edit', edit_suite_path(@suite)
 |

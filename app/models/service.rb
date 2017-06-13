@@ -1,5 +1,6 @@
 class Service < ActiveRecord::Base
   belongs_to :suite
+  has_many :environment_services
 
   def docker_image_tags
     @docker_image_tags ||= JSON.parse(HTTParty.get("http://registry.hub.docker.com/v1/repositories/#{docker_repo}/tags", :verify => false).body).collect {|item| item["name"]}.to_set

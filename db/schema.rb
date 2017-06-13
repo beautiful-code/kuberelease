@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170519164013) do
+ActiveRecord::Schema.define(version: 20170613084323) do
 
   create_table "commands", force: :cascade do |t|
     t.integer  "environment_id", limit: 4
@@ -44,6 +44,18 @@ ActiveRecord::Schema.define(version: 20170519164013) do
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
+
+  create_table "environment_services", force: :cascade do |t|
+    t.integer  "environment_id", limit: 4
+    t.integer  "service_id",     limit: 4
+    t.text     "variables",      limit: 4294967295
+    t.string   "name",           limit: 255
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+  end
+
+  add_index "environment_services", ["environment_id"], name: "index_environment_services_on_environment_id", using: :btree
+  add_index "environment_services", ["service_id"], name: "index_environment_services_on_service_id", using: :btree
 
   create_table "environments", force: :cascade do |t|
     t.string   "name",         limit: 255

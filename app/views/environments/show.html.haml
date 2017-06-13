@@ -1,29 +1,27 @@
-%p#notice= notice
-%p
-  %strong Name:
-  = @environment.name
-%p
-  %strong Suite:
-  = @environment.suite.name
-%p
-  %strong K8s master:
-  = @environment.k8s_master
-%p
-  %strong K8s username:
-  = @environment.k8s_username
-%p
-  %strong K8s password:
-  = @environment.k8s_password
+.row
+  %h4 Suite: #{@environment.suite.name}
+  %br
+  %h4 Environment: #{@environment.name}
+-#
+  %p
+    %strong K8s master:
+    = @environment.k8s_master
+  %p
+    %strong K8s username:
+    = @environment.k8s_username
+  %p
+    %strong K8s password:
+    = @environment.k8s_password
 
-%div
+.row
   %strong Current services
-  %table
+  %table.table.table-hover.table-bordered
     %thead
       %tr
         %th Service Name
         %th Current Version
         %th Links
-        %th Launch Version
+        %th
     %tbody
       - @environment.suite.services.each do |service|
         - current_tag = @environment.current_service_tag(service.name)
@@ -32,47 +30,7 @@
           %td= "#{service.get_message_for_release(current_tag)} #{current_tag}"
           %td= link_to 'Deployment Details', deployment_details_suite_environment_path(:service_name => service.name), :target => '_blank'
           %td
-            = form_tag launch_version_suite_environment_path(:service_name=>service.name) do
-              = select 'launch', 'version', service.release_versions.collect {|r| [r[:message], r[:sha]]}
-              = submit_tag 'Launch', :confirm => 'Are you sure?'
-
-%div
-
-  %div#run_command
-    %h4 Run command
-    = form_tag run_command_suite_environment_path do
-      %p
-        %label Service:
-        = select 'command', 'service_id', @environment.services.collect {|r| [r.name, r.id]}
-        %label Command:
-        = text_field 'command', 'cmd', value: 'uname'
-        = submit_tag 'Run'
-
-
-
-  %strong Commands
-  %table
-    %thead
-      %tr
-        %th Command
-        %th Service
-        %th State
-        %th Pod Name
-        %th Created at
-        %th Output
-    %tbody
-      - @environment.commands.each do |command|
-        %tr
-          %td= command.cmd
-          %td= "#{command.service.name} (#{command.version[0,5]})"
-          %td= command.state
-          %td= command.pod_name
-          %td= command.created_at
-          %td= command.output
-
-%br
-%br
-%br
+            = link_to 'Show', show_service_suite_environment_path(@suite, @environment, service)
 
 
 = link_to 'Edit', edit_suite_environment_path(@suite,@environment)

@@ -1,16 +1,14 @@
-%p#notice= notice
-%h1 Listing Suites
-%table
+%h2 Listing Suites
+%table.table.table-bordered.table-hover
   %thead
     %tr
       %th Name
-      %th{:colspan => "3"}
+      %th{:colspan => "3"} Actions
   %tbody
     - @suites.each do |suite|
       %tr
         %td= suite.name
-        %td= link_to 'Show', suite
-        %td= link_to 'Edit', edit_suite_path(suite)
-        %td= link_to 'Destroy', suite, method: :delete, data: { confirm: 'Are you sure?' }
-%br/
-= link_to 'New Suite', new_suite_path
+        %td= link_to 'Show', suite, class: 'btn btn-success'
+        %td= link_to 'Edit', edit_suite_path(suite), class: 'btn btn-warning'
+        %td= link_to 'Destroy', suite, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger'
+= link_to '+ New Suite', new_suite_path, class: 'btn btn-primary'

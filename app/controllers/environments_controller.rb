@@ -85,6 +85,10 @@ class EnvironmentsController < ApplicationController
     end
   end
 
+  def show_service
+    @service = @environment.services.find(params[:service_id])
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_environment

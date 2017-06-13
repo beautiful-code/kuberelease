@@ -1,6 +1,7 @@
 class Environment < ActiveRecord::Base
   belongs_to :suite
   has_many :commands, -> { order(created_at: :desc) }
+  has_many :environment_services
 
   delegate :services, to: :suite
 
@@ -25,10 +26,11 @@ class Environment < ActiveRecord::Base
     url = deployment_rest_url(service_name)
 
     JSON.parse(
-      HTTParty.get(url,
-                   :headers => headers,
-                   :verify => false
-                  ).body
+      HTTParty.get(
+        url,
+        :headers => headers,
+        :verify => false
+      ).body
     )
   end
 
@@ -56,8 +58,10 @@ class Environment < ActiveRecord::Base
         "containers":[
           {
             "name":"#{service.name}",
-            "image":"#{service.docker_repo}:#{sha}"
-          }
+            "image":"#{service.docker_repo}:#{sha}",
+            "env": [
+            ]
+          },
         ]
       }
     }
